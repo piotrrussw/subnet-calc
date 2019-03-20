@@ -1,8 +1,9 @@
 #!/usr/bin/python
-import ipaddress
 import re
+import struct
 import sys
 import socket
+import fcntl
 
 
 def is_valid_ip(ip_addr):
@@ -26,15 +27,25 @@ def is_valid_ip(ip_addr):
 
 def is_valid_mask(mask_addr):
     """
-
     :param mask_addr:
     :return:
     """
-    int_mask = int(mask_addr)
-    if 1 <= int_mask <= 30:
-        return True
-    else:
+    if not is_valid_ip(mask_addr):
+        # Each mask looks like an IPv4 address and must pass the checks
         return False
+
+    ip_mask_binary = ""
+    ip_mask_binary = ip_mask_binary.join([bin(int(i))[2:] for i in mask_addr.split(".")])
+
+    is_bit_zero = mask_addr[0] == "0"
+    for bit in ip_mask_binary[1:]:
+        if bit == "1" and is_bit_zero:
+            return False
+
+        if bit == "0":
+            is_bit_zero = True
+
+    return True
 
 
 def cidr_to_netmask(cidr):
@@ -51,6 +62,10 @@ def cidr_to_netmask(cidr):
             str((0x000000ff & mask_addr)))
 
 
+def netmask_to_cidr(net_mask):
+    return str(sum([bin(int(bits)).count("1") for bits in net_mask.split(".")]))
+
+
 def is_private_ip(ip_addr):
     """
 
@@ -65,7 +80,7 @@ def is_private_ip(ip_addr):
     return res is not None
 
 
-def ip_to_binary(ip_addr):
+def to_binary(ip_addr):
     """
 
     :param ip_addr:
@@ -87,11 +102,30 @@ def get_network_address(ip_addr, subnet_mask):
 
 
 def get_network_class(ip_addr):
-    return
+    first_octet = int(ip_addr.split(".")[0])
+
+    if first_octet in range(0, 128):
+        return "A"
+    if first_octet in range(128, 192):
+        return "B"
+    if first_octet in range(192, 224):
+        return "C"
+    if first_octet in range(224, 240):
+        return "D"
+    if first_octet in range(240, 256):
+        return "E"
 
 
-def get_broadcast_address(ip_addr):
-    return
+def get_broadcast_address(ip_addr, subnet_mask):
+    """
+
+    :param ip_addr:
+    :param subnet_mask:
+    :return:
+    """
+    return ".".join(map(str, [i | m  # Apply the mask
+                              for i, m in zip(map(int, ip_addr.split(".")),
+                                              map(int, subnet_mask.split(".")))]))
 
 
 def get_primary_host(ip_addr):
@@ -112,16 +146,22 @@ mask = ''
 
 if len(arg) > 1:
     [ip, mask] = arg[1].split('/')
+    mask = cidr_to_netmask(mask)
 else:
     print('No ip address was passed, getting automatically...')
+    mask = socket.inet_ntoa(fcntl.ioctl(socket.socket(socket.AF_INET, socket.SOCK_DGRAM),
+                                        35099, struct.pack('256s', "lo"))[20:24])
     ip = socket.gethostbyname(socket.getfqdn())
 
 is_private = 'private' if is_private_ip(ip) else 'public'
 
 if is_valid_ip(ip) and is_valid_mask(mask):
     print("\nThe entered ip address is: " + ip)
-    print("Ip address in binary is: " + ip_to_binary(ip))
+    print("Ip address in binary is: " + to_binary(ip))
     print("The entered ip address is: " + is_private)
-    print("The entered mask cidr is: " + mask)
-    print("The entered mask is: " + cidr_to_netmask(mask))
+    print("The entered mask cidr is: " + netmask_to_cidr(mask))
+    print("The entered mask is: " + mask)
+    print("The entered mask binary is: " + to_binary(mask))
     print("The entered network address is: " + get_network_address(ip, mask))
+    print("The entered network class is: " + get_network_class(ip))
+    print("The entered broadcast address is: " + get_broadcast_address(ip, mask))
