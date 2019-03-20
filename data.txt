@@ -1,14 +1,14 @@
-The entered ip address is: 192.156.123.1
-Binary IP: 11000000.10011100.01111011.00000001
-The entered ip address is: public
-The entered mask cidr is: 12
-The entered mask is: 255.240.0.0
-The entered mask binary is: 11111111.11110000.00000000.00000000
-The entered network address is: 192.144.0.0
-The entered network address binary is: 11000000.10010000.00000000.00000000
-The entered network class is: C
-The entered broadcast address is: 192.159.255.255
-The entered broadcast address binary is: 11000000.10011111.11111111.11111111
-The maximum number of hosts is: 12
-The min host is: 192.144.0.1
-The min host is: 192.159.255.254
+The entered ip address is: 127.0.1.1
+Binary IP: 01111111.00000000.00000001.00000001
+The entered ip address is: private
+The entered mask cidr is: 8
+The entered mask is: 255.0.0.0
+The entered mask binary is: 11111111.00000000.00000000.00000000
+The entered network address is: 127.0.0.0
+The entered network address binary is: 01111111.00000000.00000000.00000000
+The entered network class is: A
+The entered broadcast address is: 127.255.255.255
+The entered broadcast address binary is: 01111111.11111111.11111111.11111111
+The maximum number of hosts is: 8
+The min host is: 127.0.0.1
+The min host is: 127.255.255.254
