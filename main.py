@@ -34,47 +34,48 @@ if is_valid_ip(ip) and is_valid_mask(mask):
     max_host = get_max_host(broadcast_address)
 
     text_file = open("data.txt", "w")
-
-    print("\nThe entered ip address is: " + ip)
     text_file.write("The entered ip address is: " + ip + "\n")
-    print("Ip address in binary is: " + binary_ip)
     text_file.write("Binary IP: " + binary_ip + "\n")
-    print("The entered ip address is: " + is_private)
     text_file.write("The entered ip address is: " + is_private + "\n")
-    print("The entered mask cidr is: " + cidr_mask)
     text_file.write("The entered mask cidr is: " + cidr_mask + "\n")
-    print("The entered mask is: " + mask)
     text_file.write("The entered mask is: " + mask + "\n")
-    print("The entered mask binary is: " + binary_mask)
     text_file.write("The entered mask binary is: " + binary_mask + "\n")
-    print("The entered network address is: " + network_address)
     text_file.write("The entered network address is: " + network_address + "\n")
-    print("The entered network address binary is: " + binary_network_address)
     text_file.write("The entered network address binary is: " + binary_network_address + "\n")
-    print("The entered network class is: " + network_class)
     text_file.write("The entered network class is: " + network_class + "\n")
-    print("The entered broadcast address is: " + broadcast_address)
     text_file.write("The entered broadcast address is: " + broadcast_address + "\n")
-    print("The entered broadcast address binary is: " + binary_broadcast_address)
     text_file.write("The entered broadcast address binary is: " + binary_broadcast_address + "\n")
-    print("The maximum number of hosts is: " + maximum_hosts)
     text_file.write("The maximum number of hosts is: " + maximum_hosts + "\n")
-    print("The min host is: " + min_host)
     text_file.write("The min host is: " + min_host + "\n")
-    print("The min host is: " + max_host)
     text_file.write("The min host is: " + max_host + "\n")
-    print("\n PING?")
-    pressed = raw_input("Press Y or N\n")
-
     text_file.close()
 
-    if pressed == 'Y':
-        response = os.system("ping -c 1 " + ip)
-        if response == 0:
-            print(ip + ", is up!")
+    print("\nThe entered ip address is: " + ip)
+    print("Ip address in binary is: " + binary_ip)
+    print("The entered ip address is: " + is_private)
+    print("The entered mask cidr is: " + cidr_mask)
+    print("The entered mask is: " + mask)
+    print("The entered mask binary is: " + binary_mask)
+    print("The entered network address is: " + network_address)
+    print("The entered network address binary is: " + binary_network_address)
+    print("The entered network class is: " + network_class)
+    print("The entered broadcast address is: " + broadcast_address)
+    print("The entered broadcast address binary is: " + binary_broadcast_address)
+    print("The maximum number of hosts is: " + maximum_hosts)
+    print("The min host is: " + min_host)
+    print("The min host is: " + max_host)
+
+    if not len(arg) > 1 or ip == network_address or ip == broadcast_address:
+        print("\n PING?")
+        pressed = raw_input("Press Y or N\n")
+
+        if pressed == 'Y':
+            response = os.system("ping -c 1 " + ip)
+            if response == 0:
+                print(ip + ", is up!")
+            else:
+                print(ip + ", is down!")
         else:
-            print(ip + ", is down!")
-    else:
-        print("Thank you")
+            print("Thank you")
 
     exit(0)

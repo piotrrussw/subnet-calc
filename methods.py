@@ -137,4 +137,4 @@ def get_max_host(broadcast_addr):
 
 def get_maximum_hosts(sub_mask):
     no_zeros = to_binary(sub_mask).count("0")
-    return str(32 - no_zeros)
+    return str(2 ** abs(no_zeros) -2)
